@@ -11,20 +11,32 @@ export class NftService {
         return this.ipfsService.getNft(cid);
     }
 
-    async saveNft(file: Express.Multer.File, bucket: string): Promise<string> {
+    async saveNft(file: Express.Multer.File, gameName: string): Promise<string> {
+        const metadata: Metadata = this.generateMetadata(file, gameName);
+        const res = await this.ipfsService.addNft(metadata, file)
 
-        const metadata: Metadata = {
+        console.log(res)
+
+        return res;
+    }
+
+    async saveNftMfs(file: Express.Multer.File, gameName: string): Promise<string> {
+        const metadata = this.generateMetadata(file, gameName);
+        const res = await this.ipfsService.addNftMfs(metadata, file)
+
+        console.log(res)
+
+        return res;
+    }
+
+    private generateMetadata(file: Express.Multer.File, gameName: string): Metadata {
+        return {
             headers: {
                 filename: file.originalname,
                 contentType: file.mimetype,
                 size: file.size,
             },
-            path: `/${bucket}/${file.originalname}`,
+            path: `/${gameName}`,
         };
-
-        const res = await this.ipfsService.addNft(metadata, file)
-        console.log(res)
-
-        return res;
     }
 }

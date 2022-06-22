@@ -9,17 +9,24 @@ export class NftController {
   @Get(':cid')
   async readNft(@Param('cid') cid: string) {
     console.log(cid)
-    // get nft metadata from ipfs with cid..?
     return await this.nftService.findNft(cid);
   }
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('image'))
-  async createNft(@UploadedFile() file: Express.Multer.File, @Body('bucket') bucket: string): Promise<string> { // body metadata class 생성
-    
+  async createNft(@UploadedFile() file: Express.Multer.File, @Body('game-name') gameName: string): Promise<string> {
     console.log(file)
-    console.log(bucket)
+    console.log(gameName)
 
-    return await this.nftService.saveNft(file, bucket);
+    return await this.nftService.saveNft(file, gameName);
+  }
+
+  @Post('upload/mfs')
+  @UseInterceptors(FileInterceptor('image'))
+  async createNftMFS(@UploadedFile() file: Express.Multer.File, @Body('game-name') gameName: string): Promise<string> {
+    console.log(file)
+    console.log(gameName)
+
+    return await this.nftService.saveNftMfs(file, gameName);
   }
 }
