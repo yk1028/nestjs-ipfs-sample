@@ -1,6 +1,5 @@
 import { Body, Controller, Get, Param, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-// import { multerDiskOptions } from 'src/common/multer.options';
 import { NftService } from './nft.service';
 
 @Controller('nft')
@@ -24,9 +23,3 @@ export class NftController {
     return await this.nftService.saveNft(file, bucket);
   }
 }
-
-// add nft metadata to ipfs
-// image 파일 저장 경로 확인 => const description = file.destination;
-// ipfs에 image file(file.buffer) 저장 -> cid 획득
-// image file cid와 body 내용으로 metadata 구성하여 ipfs에 저장 -> cid
-// metadata cid return

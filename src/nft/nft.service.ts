@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { IpfsService } from '../ipfs/ipfs.service';
 import { Metadata } from 'src/model/metadata';
-import { IpfsService } from './ipfsService';
 
 @Injectable()
 export class NftService {
