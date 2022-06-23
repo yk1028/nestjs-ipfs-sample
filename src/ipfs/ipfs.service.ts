@@ -16,6 +16,11 @@ export class IpfsService {
 
         return this.contentToJson(content);
     }
+    
+    async findCidByMfsPath(path: string) {
+        const stats = await this.ipfs.files.stat(path);
+        return stats.cid.toString();
+    }
 
     private contentToJson(content: any[]): string {
         const raw = Buffer.from(content).toString('utf8') // json = utf8, image = base64 Buffer.from(content).toString('base64')
