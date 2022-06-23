@@ -1,7 +1,6 @@
 import { Body, Controller, Get, Param, Post, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { NftService } from './nft.service';
-import { PathDto } from './pathDto';
 
 @Controller('nft')
 export class NftController {

@@ -5,4 +5,4 @@ import { IpfsService } from './ipfs.service';
     providers: [IpfsService],
     exports: [IpfsService]
 })
-export class IpfsModule {}
+export class IpfsModule { }

@@ -9,4 +9,4 @@ import { NftService } from './nft.service';
     controllers: [NftController],
     providers: [IpfsService, NftService]
 })
-export class NftModule {}
+export class NftModule { }

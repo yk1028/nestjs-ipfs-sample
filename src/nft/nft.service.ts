@@ -7,7 +7,6 @@ export class NftService {
     constructor(private readonly ipfsService: IpfsService) { }
 
     async findNft(cid: string): Promise<string> {
-
         return this.ipfsService.getNft(cid);
     }
 
@@ -18,7 +17,7 @@ export class NftService {
     async saveNft(file: Express.Multer.File, gameName: string): Promise<string> {
         const metadata: Metadata = this.generateMetadata(file, gameName);
         const res = await this.ipfsService.addNft(metadata, file)
-        
+
         console.log(res)
 
         return res;
@@ -27,7 +26,7 @@ export class NftService {
     async saveNftMfs(file: Express.Multer.File, gameName: string): Promise<string> {
         const metadata = this.generateMetadata(file, gameName);
         const res = await this.ipfsService.addNftMfs(metadata, file)
-        
+
         console.log(res)
 
         return res;

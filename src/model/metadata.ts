@@ -1,4 +1,4 @@
-import {FileHeaders} from './file';
+import { FileHeaders } from './file';
 
 export interface Metadata {
     headers?: FileHeaders;

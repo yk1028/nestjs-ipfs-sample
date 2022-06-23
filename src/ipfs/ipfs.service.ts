@@ -16,7 +16,7 @@ export class IpfsService {
 
         return this.contentToJson(content);
     }
-    
+
     async findCidByMfsPath(path: string) {
         const stats = await this.ipfs.files.stat(path);
         return stats.cid.toString();
