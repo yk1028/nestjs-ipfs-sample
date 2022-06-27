@@ -5,10 +5,10 @@ import { Metadata } from 'src/model/metadata';
 @Injectable()
 export class IpfsService {
 
-    private ipfs = create()
+    private ipfs = create();
     private id = 0;
 
-    async getNft(cid: string): Promise<string> {
+    async getNftMetadataByCid(cid: string): Promise<string> {
         let content = [];
         for await (const chunk of this.ipfs.cat(cid)) { // get, cat
             content = [...content, ...chunk];
@@ -50,23 +50,30 @@ export class IpfsService {
         return cid.toString();
     }
 
-    async addNftMfs(metadata: Metadata, file: Express.Multer.File): Promise<string> {
+    async addNftByMfs(metadata: Metadata, image: Express.Multer.File): Promise<string> {
+        const imgaePath = await this.addImageToIPFSByMfs(metadata, image);
+        const metadataPath = await this.addMetadataToIPFSByMfs(metadata, imgaePath);
 
+        this.id++;
+
+        return metadataPath;
+    }
+
+    private async addImageToIPFSByMfs(metadata: Metadata, file: Express.Multer.File): Promise<string> {
         const imagePath = `${metadata.path}/nft${this.id}/image`;
 
         await this.ipfs.files.write(imagePath, file.buffer, { create: true, parents: true });
+        return imagePath;
+    }
 
+    private async addMetadataToIPFSByMfs(metadata: Metadata, imagePath: string): Promise<string> {
         const jsonMetadata = {
             name: metadata.headers.filename,
             image_path: imagePath
         }
-
         const metadataPath = `${metadata.path}/nft${this.id}/metadata`;
 
         await this.ipfs.files.write(metadataPath, JSON.stringify(jsonMetadata), { create: true, parents: true });
-
-        this.id++;
-
         return metadataPath;
     }
 }

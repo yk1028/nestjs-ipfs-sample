@@ -20,19 +20,13 @@ export class NftController {
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('image'))
-  async createNft(@UploadedFile() file: Express.Multer.File, @Body('game-name') gameName: string): Promise<string> {
-    console.log(file)
-    console.log(gameName)
-
-    return await this.nftService.saveNft(file, gameName);
+  async createNft(@UploadedFile() image: Express.Multer.File, @Body('game-name') gameName: string): Promise<string> {
+    return await this.nftService.saveNft(image, gameName);
   }
 
   @Post('upload/mfs')
   @UseInterceptors(FileInterceptor('image'))
-  async createNftMFS(@UploadedFile() file: Express.Multer.File, @Body('game-name') gameName: string): Promise<string> {
-    console.log(file)
-    console.log(gameName)
-
-    return await this.nftService.saveNftMfs(file, gameName);
+  async createNftByMfs(@UploadedFile() image: Express.Multer.File, @Body('game-name') gameName: string): Promise<string> {
+    return await this.nftService.saveNftByMfs(image, gameName);
   }
 }
