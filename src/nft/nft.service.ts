@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { IpfsService } from '../ipfs/ipfs.service';
 import { Metadata } from 'src/model/metadata';
+import { UploadNftDto } from './upload-nft.dto';
 
 @Injectable()
 export class NftService {
@@ -14,18 +15,17 @@ export class NftService {
         return this.ipfsService.findCidByMfsPath(path);
     }
 
-    async saveNft(file: Express.Multer.File, gameName: string): Promise<string> {
-        const metadata: Metadata = this.generateMetadata(file, gameName);
+    async saveNft(file: Express.Multer.File, uploadNftDto: UploadNftDto): Promise<string> {
+        const metadata: Metadata = this.generateMetadata(file, uploadNftDto.gameName);
         const res = await this.ipfsService.addNft(metadata, file);
 
         return res;
     }
 
-    async saveNftByMfs(image: Express.Multer.File, gameName: string): Promise<string> {
-        const metadata = this.generateMetadata(image, gameName);
-        const res = await this.ipfsService.addNftByMfs(metadata, image);
+    async saveNftByMfs(image: Express.Multer.File, uploadNftDto: UploadNftDto): Promise<string> {
+        const metadata = this.generateMetadata(image, uploadNftDto.gameName);
 
-        return res;
+        return await this.ipfsService.addNftByMfs(metadata, image);
     }
 
     private generateMetadata(file: Express.Multer.File, gameName: string): Metadata {

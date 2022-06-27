@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Param, Post, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { NftService } from './nft.service';
+import { UploadNftDto } from './upload-nft.dto';
 
 @Controller('nft')
 export class NftController {
@@ -20,13 +21,14 @@ export class NftController {
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('image'))
-  async createNft(@UploadedFile() image: Express.Multer.File, @Body('game-name') gameName: string): Promise<string> {
-    return await this.nftService.saveNft(image, gameName);
+  async createNft(@UploadedFile() image: Express.Multer.File, @Body() uploadNftDto: UploadNftDto): Promise<string> {
+    return await this.nftService.saveNft(image, uploadNftDto);
   }
 
   @Post('upload/mfs')
   @UseInterceptors(FileInterceptor('image'))
-  async createNftByMfs(@UploadedFile() image: Express.Multer.File, @Body('game-name') gameName: string): Promise<string> {
-    return await this.nftService.saveNftByMfs(image, gameName);
+  async createNftByMfs(@UploadedFile() image: Express.Multer.File, @Body() uploadNftDto: UploadNftDto): Promise<string> {
+    console.log(uploadNftDto)
+    return await this.nftService.saveNftByMfs(image, uploadNftDto);
   }
 }
