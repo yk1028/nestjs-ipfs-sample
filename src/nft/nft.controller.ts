@@ -27,7 +27,7 @@ export class NftController {
 
   @Post('upload/mfs')
   @UseInterceptors(FileInterceptor('image'))
-  async createNftByMfs(@UploadedFile() image: Express.Multer.File, @Body() uploadNftDto: UploadNftDto): Promise<string> {
+  async createNftByMfs(@UploadedFile() image: Express.Multer.File, @Body() uploadNftDto: UploadNftDto): Promise<Object> {
     console.log(uploadNftDto)
     return await this.nftService.saveNftByMfs(image, uploadNftDto);
   }

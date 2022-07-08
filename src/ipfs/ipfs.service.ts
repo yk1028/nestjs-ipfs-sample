@@ -1,11 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { create } from 'ipfs-http-client';
 import { Metadata } from 'src/model/metadata';
+const ipfsCluster = require('ipfs-cluster-api');
 
 @Injectable()
 export class IpfsService {
 
-    private ipfs = create();
+    private ipfs = create({ url: "http://34.83.82.136:5001" });
+    private cluster = ipfsCluster({ host: "34.83.82.136", port: "9094", protocol: 'http' });
+
     private id = 0;
 
     async getNftMetadataByCid(cid: string): Promise<string> {
@@ -50,13 +53,19 @@ export class IpfsService {
         return cid.toString();
     }
 
-    async addNftByMfs(metadata: Metadata, image: Express.Multer.File): Promise<string> {
-        const imgaePath = await this.addImageToIPFSByMfs(metadata, image);
-        const metadataPath = await this.addMetadataToIPFSByMfs(metadata, imgaePath);
+    async addNftByMfs(metadata: Metadata, image: Express.Multer.File): Promise<Object> {
+        const imagePath = await this.addImageToIPFSByMfs(metadata, image);
+        const imageCid = await this.findCidByMfsPath(imagePath);
+        const metadataPath = await this.addMetadataToIPFSByMfs(metadata, imageCid);
+
+        const nftPath = `${metadata.path}/nft${this.id}`;
+        const nftCid: string = await this.findCidByMfsPath(nftPath);
+
+        await this.pinToCluster(nftCid);
 
         this.id++;
 
-        return metadataPath;
+        return { nftPath, nftCid };
     }
 
     private async addImageToIPFSByMfs(metadata: Metadata, file: Express.Multer.File): Promise<string> {
@@ -66,14 +75,21 @@ export class IpfsService {
         return imagePath;
     }
 
-    private async addMetadataToIPFSByMfs(metadata: Metadata, imagePath: string): Promise<string> {
+    private async addMetadataToIPFSByMfs(metadata: Metadata, imageCid: string): Promise<string> {
         const jsonMetadata = {
             name: metadata.headers.filename,
-            image_path: imagePath
+            image_cid: imageCid
         }
         const metadataPath = `${metadata.path}/nft${this.id}/metadata`;
 
         await this.ipfs.files.write(metadataPath, JSON.stringify(jsonMetadata), { create: true, parents: true });
+
         return metadataPath;
+    }
+
+    private async pinToCluster(cid: string): Promise<void> {
+        await this.cluster.pin.add(cid, (err) => {
+            err ? console.error(err) : console.log('pin added')
+        });
     }
 }

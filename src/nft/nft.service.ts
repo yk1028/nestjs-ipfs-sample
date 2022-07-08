@@ -22,7 +22,7 @@ export class NftService {
         return res;
     }
 
-    async saveNftByMfs(image: Express.Multer.File, uploadNftDto: UploadNftDto): Promise<string> {
+    async saveNftByMfs(image: Express.Multer.File, uploadNftDto: UploadNftDto): Promise<Object> {
         const metadata = this.generateMetadata(image, uploadNftDto.gameName);
 
         return await this.ipfsService.addNftByMfs(metadata, image);
